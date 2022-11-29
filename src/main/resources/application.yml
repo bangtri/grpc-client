@@ -1,0 +1,11 @@
+server:
+  port: 6742
+
+grpc:
+  client:
+    GRPC-Application:
+      address: localhost:8864
+    GLOBAL:
+      enable-keep-alive: true
+      keep-alive-without-calls: true
+      negotiation-type: plaintext
