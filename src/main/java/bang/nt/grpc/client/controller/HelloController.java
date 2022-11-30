@@ -14,7 +14,6 @@ public class HelloController {
     private final HelloService helloService;
 
     @GetMapping("/{message}")
-    @PostMapping("/{message}")
     public ResponseEntity<?> hello(@PathVariable String message) {
         return ResponseEntity.ok(helloService.helloService(message));
     }
