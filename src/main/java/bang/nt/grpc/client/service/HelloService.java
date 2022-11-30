@@ -10,13 +10,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class HelloService {
 
+    private final GenericService genericService;
+
     private final HelloGRPCClient helloGRPCClient;
 
     public GlobalRes<Object> helloService(String message) {
         HelloResponse response = helloGRPCClient.helloService(message);
         return GlobalRes.builder()
                 .status(Integer.parseInt(response.getStatus()))
-                .message(response.getMessage())
+                .message(genericService.message("global.message.ok"))
                 .data(response.getResponse())
                 .build();
     }

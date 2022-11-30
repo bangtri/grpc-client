@@ -1,9 +1,25 @@
+auth-server:
+  base-url: http://localhost:8080
+
 server:
   port: 6742
 
+spring:
+  application:
+    name: GRPC-Client
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${auth-server.base-url}/auth/realms/cyberid
+          jwk-set-uri: ${auth-server.base-url}/auth/realms/cyberid/protocol/openid-connect/certs
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+    date-format: dd-MM-yyyy HH:mm:ss
+
 grpc:
   client:
-    GRPC-Application:
+    GRPC-Server:
       address: localhost:8864
     GLOBAL:
       enable-keep-alive: true
