@@ -50,9 +50,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (!CollectionUtils.isEmpty(ex.getSupportedHttpMethods())) {
             if (ex.getSupportedHttpMethods().size() > 0) {
                 ex.getSupportedHttpMethods().forEach(httpMethod -> {
-                    builderDetail.append(httpMethod).append(",");
-                    builderDetail.deleteCharAt(builderDetail.length() - 1);
+                    builderDetail.append(httpMethod).append(",").append(" ");
                 });
+                builderDetail.deleteCharAt(builderDetail.length() - 1);
+                builderDetail.deleteCharAt(builderDetail.length() - 1);
             } else {
                 ex.getSupportedHttpMethods().forEach(builderDetail::append);
             }

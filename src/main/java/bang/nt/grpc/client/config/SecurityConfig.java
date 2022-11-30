@@ -1,11 +1,11 @@
 package bang.nt.grpc.client.config;
 
+import bang.nt.grpc.client.handler.AccessDeniedExceptionHandler;
+import bang.nt.grpc.client.handler.AuthenticationExceptionHandler;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Configuration
@@ -65,25 +66,28 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, Converter<Jwt, AbstractAuthenticationToken> authentication,
                                     ServerProperties serverProperties) throws Exception {
+        http.httpBasic().disable();
         http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(authentication);
         http.anonymous();
         http.cors().configurationSource(corsConfigurationSource());
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();
-        http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-            response.addHeader(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=\"Restricted Content\"");
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
-        });
-        if (serverProperties.getSsl() != null && serverProperties.getSsl().isEnabled()) {
+        http.exceptionHandling().authenticationEntryPoint(new AuthenticationExceptionHandler());
+        http.exceptionHandling().accessDeniedHandler(new AccessDeniedExceptionHandler());
+        if (Objects.nonNull(serverProperties.getSsl()) && serverProperties.getSsl().isEnabled()) {
             http.requiresChannel().anyRequest().requiresSecure();
         } else {
             http.requiresChannel().anyRequest().requiresInsecure();
         }
-        http.authorizeHttpRequests()
-                .antMatchers(
-                        "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
-                ).permitAll()
-                .anyRequest().authenticated();
+        http.authorizeRequests(auth -> auth.antMatchers(
+                        "/internal-service/**"
+                ).hasAuthority("admin"))
+                .authorizeRequests(auth -> auth.antMatchers(
+                        "/private-service/**"
+                ).authenticated())
+                .authorizeRequests(auth -> auth.antMatchers(
+                        "/public-service/**"
+                ).permitAll());
         return http.build();
     }
 
