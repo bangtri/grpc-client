@@ -40,6 +40,10 @@ public class SecurityConfig {
         return jwt -> {
             final var realmAccess = (Map<String, Object>) jwt.getClaims().getOrDefault("realm_access", Map.of());
             final var realmRoles = (Collection<String>) realmAccess.getOrDefault("roles", List.of());
+            /*if (!CollectionUtils.isEmpty(realmRoles)) {
+                to do add role application
+            }*/
+            System.out.println("realmRoles: " + realmRoles);
             final var resourceAccess = (Map<String, Object>) jwt.getClaims().getOrDefault("resource_access", Map.of());
             final var confidentialClientAccess = (Map<String, Object>) resourceAccess
                     .getOrDefault("spring-addons-confidential", Map.of());
@@ -81,7 +85,7 @@ public class SecurityConfig {
         }
         http.authorizeRequests(auth -> auth.antMatchers(
                         "/internal-service/**"
-                ).hasAuthority("admin"))
+                ).hasAnyAuthority("admin"))
                 .authorizeRequests(auth -> auth.antMatchers(
                         "/private-service/**"
                 ).authenticated())
