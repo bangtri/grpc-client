@@ -43,8 +43,8 @@ public class SecurityConfig {
             /*if (!CollectionUtils.isEmpty(realmRoles)) {
                 to do add role application
             }*/
-            System.out.println("realmRoles: " + realmRoles);
-            final var resourceAccess = (Map<String, Object>) jwt.getClaims().getOrDefault("resource_access", Map.of());
+            final var resourceAccess = (Map<String, Object>) jwt.getClaims().getOrDefault("resource_access",
+                    Map.of());
             final var confidentialClientAccess = (Map<String, Object>) resourceAccess
                     .getOrDefault("spring-addons-confidential", Map.of());
             final var confidentialClientRoles = (Collection<String>) confidentialClientAccess.getOrDefault("roles",
