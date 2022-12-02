@@ -20,7 +20,7 @@ public class AuthenticationExceptionHandler implements AuthenticationEntryPoint 
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .message("Authentication required to access")
                 .build();
-        response.setStatus(HttpStatus.OK.value());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(new Gson().toJson(res));
     }

@@ -83,9 +83,10 @@ public class SecurityConfig {
         } else {
             http.requiresChannel().anyRequest().requiresInsecure();
         }
-        http.authorizeRequests(auth -> auth.antMatchers(
+        http
+                .authorizeRequests(auth -> auth.antMatchers(
                         "/internal-service/**"
-                ).hasAnyAuthority("admin"))
+                ).hasAnyAuthority("admin-system"))
                 .authorizeRequests(auth -> auth.antMatchers(
                         "/private-service/**"
                 ).authenticated())

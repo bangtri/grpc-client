@@ -1,8 +1,16 @@
 auth-server:
-  base-url: https://stg.accounts.cyberid.vn
+  base-url: http://localhost:8080
+  auth-url: ${auth-server.base-url}/auth/realms/cyberid/protocol/openid-connect/auth
+  token-url: ${auth-server.base-url}/auth/realms/cyberid/protocol/openid-connect/token
 
 server:
   port: 6742
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: PartnerHub
+      use-pkce-with-authorization-code-grant: true
 
 spring:
   application:
@@ -20,7 +28,7 @@ spring:
 grpc:
   client:
     GRPC-Server:
-      address: localhost:8864
+      address: localhost:8090
     GLOBAL:
       enable-keep-alive: true
       keep-alive-without-calls: true

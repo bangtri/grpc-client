@@ -20,7 +20,7 @@ public class AccessDeniedExceptionHandler implements AccessDeniedHandler {
                 .status(HttpStatus.FORBIDDEN.value())
                 .message("Authentication required to access")
                 .build();
-        response.setStatus(HttpStatus.OK.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(new Gson().toJson(res));
     }
